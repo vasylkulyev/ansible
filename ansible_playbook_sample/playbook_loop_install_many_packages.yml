@@ -1,0 +1,32 @@
+---
+- name: Say Hello to ALL
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Say Hello to ALL
+    debug: msg="hello {{ item }}"
+    loop:
+        - "Vasya"
+        - "Petya"
+        - "Alina"
+        - "Katerina"
+
+  - name: Loop Until Example
+    shell: echo -n Z >> myfile.txt && cat myfile.txt
+    register: output
+    delay: 2
+    retries: 10
+    until: output.stdout.find("ZZZZ") == false
+
+  - name: Print Final Output
+    debug:
+      var: output.stdout
+
+  - name: INSTALL MANY PACKAGES
+    apt: name={{ item }} state=installed
+    loop:
+        - python
+        - tree
+        - mc
+        - mysql-client

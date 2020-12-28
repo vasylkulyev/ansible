@@ -1,0 +1,37 @@
+---
+- name: Variables
+  hosts: test
+  become: yes
+
+  vars: #ANY VARIABLES
+    var1: Hello
+    var2: World
+    secret: XXX
+
+  tasks:
+  - name: PRINT secret VARIABLE ON SCREEN
+    debug: 
+      var: secret
+
+  - name: PRINT ANY MESSAGE WITH VARIABLE
+    debug: 
+      msg: "Secret code is: {{ secret }}"
+
+  - name: COMPARE VARIABLES AND CREATE NEW ONE
+    set_fact: full_message="{{ var1 }} {{ var2 }} from {{ owner }}"
+   
+  - name: PRINT full_message ON SCREEN
+    debug:
+      var: full_message
+
+  - name: INVOKE MODULE AND SAVE IT TO VARIABLE
+    shell: uptime
+    register: results
+
+  - name: PRINT INVOKED MODULE ON SCREEN
+    debug:
+      var: results
+
+  - name: CHECK AND PRINT LINUX_VERSION
+    debug:
+      var: ansible_os_family

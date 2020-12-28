@@ -1,0 +1,23 @@
+---
+- name: Installation
+  hosts: all
+  become: yes
+
+  vars:
+    source_file: ./mywebsite/index.html
+    destin_folder: /var/www/html
+
+  tasks:
+  - name: Install Apache2
+    apt: name=apache2 state=latest
+
+  - name: Copy ready WebPage to remote servers
+    copy: src={{ source_file }} dest={{ destin_folder }} mode=0555
+    notify: Restart Apache2
+
+  - name: Start Apache2 on Boot
+    service: name=apache2 state=started enabled=yes
+
+  handlers:
+  - name: Restart Apache2
+    service: name=apache2 state=restarted

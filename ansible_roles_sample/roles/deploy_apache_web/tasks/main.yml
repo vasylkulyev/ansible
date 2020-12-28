@@ -1,0 +1,39 @@
+---
+# tasks file for deploy_apache_web
+  - name: CHECK AND PRINT LINUX VERSION
+    debug: var=ansible_os_family
+
+  - block: # REDHAT #
+      - name: Installation Apache2 to REDHAT
+        yum: name=httpd state=latest
+
+      - name: Start WebServer Apache and enable on Boot
+        service: name=httpd state=started enabled=yes
+
+    when: ansible_os_family == "RedHat"
+
+  - block: # DEBIAN #
+      - name: Installation Apache2 to DEBIAN
+        apt: name=apache2 state=latest
+
+      - name: Start WebServer Apache and enable on Boot
+        service: name=apache2 state=started enabled=yes
+
+    when: ansible_os_family == "Debian"
+
+  - name: GENERATE INDEX.HTML FILE
+    template: src=index.j2 dest={{ dest_folder }}/index.htm mode=0555
+    notify:
+      - Restart Apache REDHAT
+      - Restart Apache DEBIAN
+
+  - name: Copy Files to Server
+    copy: src={{ item }} dest={{ dest_folder }} mode=0555
+    loop:
+        - "Devops1.jpeg"
+        - "devops-1.jpg"
+        - "EXIN_Badge_Module_Foundation_DevOps.png"
+
+    notify:
+      - Restart Apache REDHAT
+      - Restart Apache DEBIAN

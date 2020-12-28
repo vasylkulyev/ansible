@@ -1,0 +1,46 @@
+---
+- name: Install Apache
+  hosts: test
+  become: yes
+
+  vars:
+    source_file: ./mywebsite/index.html
+    dest_folder: /var/www/html
+
+  tasks:
+
+  - name: CHECK AND PRINT LINUX VERSION
+    debug: var=ansible_os_family
+
+  - block: # REDHAT #
+      - name: Installation Apache2 to REDHAT
+        yum: name=httpd state=latest
+
+      - name: Copy Files to Server
+        copy: src={{ source_file }} dest={{ dest_folder }} mode=0555
+        notify: Restart Apache REDHAT
+
+      - name: Start WebServer Apache and enable on Boot
+        service: name=httpd state=started enabled=yes
+
+    when: ansible_os_family == "RedHat"
+
+  - block: # DEBIAN #
+      - name: Installation Apache2 to DEBIAN
+        apt: name=apache2 state=latest
+
+      - name: Copy files to Web_Server
+        copy: src={{ source_file }} dest={{ dest_folder }} mode=0555
+        notify: Restart Apache DEBIAN
+    
+      - name: Start WebServer Apache and enable on Boot
+        service: name=apache2 state=started enabled=yes
+ 
+    when: ansible_os_family == "Debian"
+
+  handlers:
+  - name: Restart Apache REDHAT
+    service: name=httpd state=restarted
+
+  - name: Restart Apache DEBIAN
+    service: name=apache2 state=restarted

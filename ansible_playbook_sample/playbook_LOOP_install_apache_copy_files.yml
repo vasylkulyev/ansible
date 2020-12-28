@@ -1,0 +1,56 @@
+---
+- name: Install Apache
+  hosts: test
+  become: yes
+
+  vars:
+    source_folder: ./mywebsite
+    dest_folder: /var/www/html
+
+  tasks:
+
+  - name: CHECK AND PRINT LINUX VERSION
+    debug: var=ansible_os_family
+
+  - block: # REDHAT #
+      - name: Installation Apache2 to REDHAT
+        yum: name=httpd state=latest
+
+      - name: Start WebServer Apache and enable on Boot
+        service: name=httpd state=started enabled=yes
+
+    when: ansible_os_family == "RedHat"
+
+  - block: # DEBIAN #
+      - name: Installation Apache2 to DEBIAN
+        apt: name=apache2 state=latest
+
+      - name: Start WebServer Apache and enable on Boot
+        service: name=apache2 state=started enabled=yes
+ 
+    when: ansible_os_family == "Debian"
+
+  # SECOND METHOD OF LOOP
+  - name: Copy Files to Server
+    copy: src={{ item }} dest={{ dest_folder }} mode=0555
+    with_fileglob: "{{ source_folder }}/*.*"
+
+#    FIRST TYPE OF LOOP
+#    copy: src={{ source_folder }}/{{ item }} dest={{ dest_folder }} mode=0555
+#    loop:
+#        - "index.html"
+#        - "automating-six-cs-devops.jpg"
+#        - "devops-development-company.jpg"
+
+    notify:
+      - Restart Apache REDHAT
+      - Restart Apache DEBIAN
+
+  handlers:
+  - name: Restart Apache REDHAT
+    service: name=httpd state=restarted
+    when: ansible_os_family == "RedHat"
+
+  - name: Restart Apache DEBIAN
+    service: name=apache2 state=restarted
+    when: ansible_os_family == "Debian"

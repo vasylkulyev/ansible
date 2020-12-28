@@ -1,4 +1,4 @@
-name: main
+name: runner
 on:
   push:
     branches: [ main ]

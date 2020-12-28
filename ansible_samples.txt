@@ -2,7 +2,7 @@ INSTALL
 1) sudo apt-add-repository ppa:ansible/ansible
    sudo apt-get update
    sudo apt-get install ansible
-1.1) sudo pip install ansible ==== INSTALLATION ON AWS
+1.1) sudo pip install ansible ==== INSTALLATION on AWS
 
 MANAGING
 2) make ssh keys >> send public to remote host >> sudo chmod 400 to private key

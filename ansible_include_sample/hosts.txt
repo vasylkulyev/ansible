@@ -1,0 +1,2 @@
+[test]
+ubuntu_16.04 ansible_host=192.168.1.108 owner=wkd

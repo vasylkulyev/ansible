@@ -14,6 +14,10 @@
     shell: echo This Server {{ inventory_hostname }} was deregistered from our Load Balancer, node name is {{ ansible_nodename }} >> /home/log.txt
     delegate_to: ubuntu_20.04
 
+  - name: Update Database
+    shell: echo UPDATING
+    run_once: true
+
   - name: Reboot my Servers
     shell: sleep 3 && reboot now
     async: 1

@@ -1,0 +1,30 @@
+---
+- name: Super Playbook
+  hosts: all
+  become: yes
+
+  vars:
+    mytext: "Hello from WKD"
+
+  tasks:
+  - name: Ping test
+    ping:
+
+  - name: Unregister Server from Load Balancer
+    shell: echo This Server {{ inventory_hostname }} was deregistered from our Load Balancer, node name is {{ ansible_nodename }} >> /home/log.txt
+    delegate_to: ubuntu_20.04
+
+  - name: Reboot my Servers
+    shell: sleep 3 && reboot now
+    async: 1
+    poll: 0
+
+  - name: Wait till my servers will come up online
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      state: started
+      delay: 5
+      timeout: 40
+    delegate_to: 127.0.0.1
+
+

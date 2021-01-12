@@ -1,0 +1,32 @@
+---
+- name: Super Playbook
+  hosts: test
+  become: yes
+
+  vars:
+    mytext: "Hello from WKD"
+
+  tasks:
+  - name: Ping test
+    ping:
+
+  - name: Unregister Server from Load Balancer
+    shell: echo This Server {{ inventory_hostname }} was deregistered from our Load Balancer, node name is {{ ansible_nodename }} >> /home/log.txt
+    delegate_to: ubuntu_20.04
+
+  - name: Create file_first
+    copy:
+      dest: /home/file_first.txt
+      content: |
+        Text Line first, in file_first
+        Text Line second, in file_first
+        Text Line third, {{ mytext }}
+    delegate_to: ubuntu_20.04
+
+  - name: Create file_second
+    copy:
+      dest: /home/file_second.txt
+      content: |
+        Text Line first, in file_second
+        Text Line second, in file_second
+        Text Line third, {{ mytext }}

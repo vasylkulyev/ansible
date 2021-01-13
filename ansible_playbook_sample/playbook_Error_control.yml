@@ -1,0 +1,22 @@
+---
+- name: The Errors conrol
+  hosts: all
+  any_errors_fatal: true
+  become: yes
+
+  tasks:
+  - name: Task Number 1
+    apt: name=treeee state=latest
+    ignore_errors: yes
+
+  - name: Task Number 2
+    shell: echo Hello World !
+    register: results
+#    failed_when: "'World' in results.stdout"
+#    failed_when: results.rc != 0
+
+#  - debug:
+#      var: results
+
+  - name: Task Number 3
+    shell: echo Privet Mir!

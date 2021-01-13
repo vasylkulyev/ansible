@@ -1,0 +1,22 @@
+ansible-vault create mysecret.txt == MAKE FILE
+
+ansible-vault view mysecret.txt == VIEW FILE
+
+ansible-vault edit mysecret.txt == РЕДАКТИРОВАНИЕ ФАЙЛА 
+
+ansible-vault rekey mysecret.txt == CHANGE PASSWORD
+
+ansible-vault encrypt mysecret.txt == ЗАШИФРОВАТЬ ФАЙЛ
+
+ansible-vault decrypt mysecret.txt == РАСШИФРОВКА ФАЙЛА
+
+ansible-playbook playbook.yml --ask-vault-pass == ЗАПУСК ЗАШИФРОВАННОГО ФАЙЛА
+
+ansible-playbook playbook.yml --vault-password-file mypass.txt == ЗАПУСК ФАЙЛА С ПАРОЛЕМ ИЗ ФАЙЛА
+
+ansible-vault encrypt_string == ЗАШИФРОВАТЬ ТОЛЬКО ОДНУ СТРОЧКУ
+
+ansible-vault encrypt_string --stdin-name "Mypassword" == ЗАШИФРОВАТЬ ТОЛЬКО ОДНУ СТРОЧКУ С ПРИСВАИВАНИЕМ ИМЕНИ
+
+echo -n "mypassword" | ansible-vault encrypt_string == ЗАШИФРОВАТЬ ТОЛЬКО ОДНУ СТРОЧКУ
+

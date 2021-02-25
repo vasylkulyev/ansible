@@ -1,0 +1,23 @@
+---
+- name: ssh_key_send
+  hosts: test
+  become: yes
+
+  tasks:
+  - name: send my pub-keys
+    authorized_key:
+      user: wkd
+      state: present
+      key: "{{ lookup('file', '/home/wkd/.ssh/id_rsa.pub') }}"
+
+  - name: send root 1
+    authorized_key:
+      user: root
+      state: present
+      key: e', '/home/wkd/.ssh/id_rsa.pub') }}"
+
+  - name: send root 2
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '/home/wkd/.ssh/id_rsa.pub') }}"

@@ -1,0 +1,60 @@
+---
+  - name: Install Srvices
+    hosts: uc
+    vars:
+      ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+    remote_user: wkd
+    gather_facts: False
+    become: yes
+    tasks:
+      - name: install nginx, zsh, wget
+        apt: name={{ item }} state=latest
+        loop:
+           - nginx
+           - zsh
+           - wget
+           - git
+           - mc
+           
+      - name: clone git
+        git:
+          repo: https://github.com/ugurcandede/Under-Construction.git
+          dest: /var/www/test
+          version: master
+          
+      - name: start nginx
+        service: name=nginx state=started enabled=yes
+
+      - name: remove default config
+        file:
+          path: /etc/nginx/sites-enabled/default
+          state: absent
+
+      - name: create new config
+        template: src=templates/uc.conf.j2 dest=/etc/nginx/sites-available/uc.conf
+
+      - name: make new symbolik link
+        file: src=/etc/nginx/sites-available/uc.conf dest=/etc/nginx/sites-enabled/uc.conf state=link
+
+      - name: reload nginx
+        service: name=nginx state=reloaded
+
+      - name: sysctl param 1
+        sysctl: name=fs.file-max value=1204000 sysctl_file=/etc/sysctl.d/20-uc.conf sysctl_set=yes
+
+      - name: sysctl param 2
+        sysctl: name=net.core.somaxconn value=65535 sysctl_file=/etc/sysctl.d/20-uc.conf sysctl_set=yes
+
+      - name: send root 1
+        authorized_key:
+          user: root
+          state: present
+          key: "{{ lookup('file', '/path/to/root_key1.pub') }}"
+          ignore_errors: yes
+
+      - name: send root 2
+        authorized_key:
+          user: root 
+          state: present
+          key: "{{ lookup('file', '/path/to/root_key2.pub') }}"
+          ignore_errors: yes

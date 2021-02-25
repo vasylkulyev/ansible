@@ -1,0 +1,27 @@
+---
+- name: Show some variables
+  hosts: proxy
+  become: yes
+  vars:
+    ansible_ssh_private_key_file: "~/.ssh/id_rsa"
+  remote_user: root
+#  gather_facts: False
+
+  tasks:
+  - name: show external port
+    debug:
+      var: ansible_default_ipv4.interface
+
+#  - name: show dante version
+#    shell: sockd -v
+#    register: dante_version
+#  - debug:
+#      var: dante_version.stdout
+
+  - name: show ip remote
+    debug:
+      var: ansible_default_ipv4.address
+
+  - name: show hostname
+    debug:
+      var: ansible_nodename

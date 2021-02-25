@@ -1,0 +1,13 @@
+---
+- name: ssh_key_send
+  hosts: proxy
+  become: yes
+  remote_user: root
+  gather_facts: False
+
+  tasks:
+  - name: send my pub-keys
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '/home/wkd/.ssh/id_rsa.pub') }}"
